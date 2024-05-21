@@ -1,0 +1,17 @@
+1.npx create react app
+2.Bootstrap: npm i Bootstrap -> css, js
+3.fantawaome icon :npm i @fortawesome/fontawesome-free -> css
+4. connext cdn link to the html page
+5. axios -> npm install axios
+6. react-router-dom -> npm install react-router-dom
+
+contacts: navbar 
+          contact-list
+          view-contact
+          edit-contact
+          add-contact
+services:contact service
+
+server setup
+json server setup -> npm i json-server
+package.json -> npm init --yes
