@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ContactService } from "../../../services/Contactservice";
 import Spinner from "../../spinner/spinner";
 
-let ContactList = () => {
-    let [query, setQuery] = useState({ text: "" });
-    let [state, setState] = useState({
+const ContactList = () => {
+    const [query, setQuery] = useState({ text: "" });
+    const [state, setState] = useState({
         loading: false,
         contacts: [],
         filteredContacts: [],
@@ -16,11 +15,13 @@ let ContactList = () => {
         const fetchContacts = async () => {
             setState(prevState => ({ ...prevState, loading: true }));
             try {
-                let response = await ContactService.getAllContacts();
+                const response = await fetch('http://localhost:9000/contacts');
+                if (!response.ok) throw new Error('Network response was not ok');
+                const data = await response.json();
                 setState({
                     loading: false,
-                    contacts: response.data,
-                    filteredContacts: response.data,
+                    contacts: data,
+                    filteredContacts: data,
                     errorMessage: ""
                 });
             } catch (error) {
@@ -36,16 +37,19 @@ let ContactList = () => {
         fetchContacts();
     }, []);
 
-    let clickDelete = async (contactId) => {
+    const clickDelete = async (contactId) => {
         try {
-            let response = await ContactService.deleteContact(contactId);
-            if (response) {
+            const response = await fetch(`http://localhost:9000/contacts/${contactId}`, {
+                method: 'DELETE'
+            });
+            if (response.ok) {
                 setState(prevState => ({ ...prevState, loading: true }));
-                let response = await ContactService.getAllContacts();
+                const updatedContactsResponse = await fetch('http://localhost:9000/contacts');
+                const updatedContacts = await updatedContactsResponse.json();
                 setState({
                     loading: false,
-                    contacts: response.data,
-                    filteredContacts: response.data,
+                    contacts: updatedContacts,
+                    filteredContacts: updatedContacts,
                     errorMessage: ""
                 });
             }
@@ -59,9 +63,9 @@ let ContactList = () => {
         }
     };
 
-    let searchContacts = (event) => {
+    const searchContacts = (event) => {
         setQuery({ ...query, text: event.target.value });
-        let theContacts = state.contacts.filter(contact => {
+        const theContacts = state.contacts.filter(contact => {
             return contact.name && contact.name.toLowerCase().includes(event.target.value.toLowerCase());
         });
         setState({
@@ -70,7 +74,7 @@ let ContactList = () => {
         });
     };
 
-    let { loading, contacts, filteredContacts, errorMessage } = state;
+    const { loading, filteredContacts, errorMessage } = state;
     return (
         <React.Fragment>
             <section className="contact-search p-3">
