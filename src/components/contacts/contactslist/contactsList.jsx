@@ -125,7 +125,7 @@ let {loading, contacts,filteredContacts, errorMessage} = state;
                 <div className="container">
                     <div className="row">
                         {
-                            filteredContacts.length > 0 &&
+                           
                             filteredContacts.map(contacts=>{
                                 return(
                                     <div className="col-md-6" key={contacts.id}>
