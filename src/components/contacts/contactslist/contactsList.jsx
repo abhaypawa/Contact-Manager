@@ -43,20 +43,16 @@ const ContactList = () => {
             const response = await fetch(`http://localhost:9000/contacts/${contactId}`, {
                 method: 'DELETE'
             });
-            if (response.ok) {
-                setState(prevState => ({ ...prevState, loading: true }));
-                const updatedContactsResponse = await fetch('http://localhost:9000/contacts');
-                if (!updatedContactsResponse.ok) throw new Error(`Error: ${updatedContactsResponse.status} ${updatedContactsResponse.statusText}`);
-                const updatedContacts = await updatedContactsResponse.json();
-                setState({
-                    loading: false,
-                    contacts: updatedContacts,
-                    filteredContacts: updatedContacts,
-                    errorMessage: ""
-                });
-            } else {
-                throw new Error(`Delete failed: ${response.status} ${response.statusText}`);
-            }
+            if (!response.ok) throw new Error(`Delete failed: ${response.status} ${response.statusText}`);
+            const updatedContactsResponse = await fetch('http://localhost:9000/contacts');
+            if (!updatedContactsResponse.ok) throw new Error(`Error: ${updatedContactsResponse.status} ${updatedContactsResponse.statusText}`);
+            const updatedContacts = await updatedContactsResponse.json();
+            setState({
+                loading: false,
+                contacts: updatedContacts,
+                filteredContacts: updatedContacts,
+                errorMessage: ""
+            });
         } catch (error) {
             console.error("Delete contact failed:", error);
             setState({
@@ -123,6 +119,7 @@ const ContactList = () => {
 
             {loading ? <Spinner /> : (
                 <React.Fragment>
+                    {errorMessage && <p className="text-danger">{errorMessage}</p>}
                     <section className="contact-list">
                         <div className="container">
                             <div className="row">
