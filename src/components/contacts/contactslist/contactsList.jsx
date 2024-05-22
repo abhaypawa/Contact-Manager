@@ -16,7 +16,7 @@ const ContactList = () => {
             setState(prevState => ({ ...prevState, loading: true }));
             try {
                 const response = await fetch('http://localhost:9000/contacts');
-                if (!response.ok) throw new Error('Network response was not ok');
+                if (!response.ok) throw new Error(`Error: ${response.status} ${response.statusText}`);
                 const data = await response.json();
                 setState({
                     loading: false,
@@ -25,6 +25,7 @@ const ContactList = () => {
                     errorMessage: ""
                 });
             } catch (error) {
+                console.error("Fetch contacts failed:", error);
                 setState({
                     loading: false,
                     contacts: [],
@@ -45,6 +46,7 @@ const ContactList = () => {
             if (response.ok) {
                 setState(prevState => ({ ...prevState, loading: true }));
                 const updatedContactsResponse = await fetch('http://localhost:9000/contacts');
+                if (!updatedContactsResponse.ok) throw new Error(`Error: ${updatedContactsResponse.status} ${updatedContactsResponse.statusText}`);
                 const updatedContacts = await updatedContactsResponse.json();
                 setState({
                     loading: false,
@@ -52,8 +54,11 @@ const ContactList = () => {
                     filteredContacts: updatedContacts,
                     errorMessage: ""
                 });
+            } else {
+                throw new Error(`Delete failed: ${response.status} ${response.statusText}`);
             }
         } catch (error) {
+            console.error("Delete contact failed:", error);
             setState({
                 loading: false,
                 contacts: [],
