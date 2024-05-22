@@ -124,10 +124,7 @@ let {loading, contacts,filteredContacts, errorMessage} = state;
                 <section className="contact-list">
                 <div className="container">
                     <div className="row">
-                        {
-                           
-                            filteredContacts.map(contacts=>{
-                                return(
+                       
                                     <div className="col-md-6" key={contacts.id}>
                                     <div className="card my-2" >
                                         <div className="card-body">
@@ -169,11 +166,6 @@ let {loading, contacts,filteredContacts, errorMessage} = state;
                                     </div>
         
                                 </div>
-                               
-
-                                )
-                            })
-                        }
              
                     </div>
                 </div>
