@@ -62,16 +62,16 @@ let ContactList = () =>{
         }
     }   
 // search contacts
-    // let searchContacts = (event)=>{
-    //     setQuery({...query, text:event.target.value})
-    //     let theContacts = state.contacts.filter(contact=>{
-    //         return contact.name.toLowerCase().includes(event.target.value.toLowerCase())
-    //     })
-    //     setState({
-    //         ...state,
-    //         filteredContacts:theContacts
-    //     })
-    // }
+    let searchContacts = (event)=>{
+        setQuery({...query, text:event.target.value})
+        let theContacts = state.contacts.filter(contact=>{
+            return contact.name.toLowerCase().includes(event.target.value.toLowerCase())
+        })
+        setState({
+            ...state,
+            filteredContacts:theContacts
+        })
+    }
 
 let {loading, contacts,filteredContacts, errorMessage} = state;
     return(
@@ -98,7 +98,7 @@ let {loading, contacts,filteredContacts, errorMessage} = state;
                                         <input
                                         name="text"
                                         value={query.text}
-                                        // onChange={searchContacts}
+                                        onChange={searchContacts}
                                         type="text" className="form-control" placeholder="Search Names"></input>
                                     </div>
 
@@ -124,10 +124,10 @@ let {loading, contacts,filteredContacts, errorMessage} = state;
                 <section className="contact-list">
                 <div className="container">
                     <div className="row">
-                        {
+                        {/* {
                             filteredContacts.length > 0 &&
                             filteredContacts.map(contacts=>{
-                                return(
+                                return( */}
                                     <div className="col-md-6" key={contacts.id}>
                                     <div className="card my-2" >
                                         <div className="card-body">
@@ -171,9 +171,9 @@ let {loading, contacts,filteredContacts, errorMessage} = state;
                                 </div>
                                
 
-                                )
-                            })
-                        }
+                                {/* ) */}
+                            {/* }) */}
+                        {/* } */}
              
                     </div>
                 </div>
