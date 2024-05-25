@@ -1,41 +1,41 @@
 import axios from "axios";
-export class ContactService{
-    static serverURL = `http://localhost:9000`;
 
-    static getGroups(){
-        let dataURL=`${this.serverURL}/groups`
-        return axios.get(dataURL)
+export class ContactService {
+    static serverURL = `https://my-json-server.typicode.com/abhaypawa/dbfile`;
+
+    static getGroups() {
+        let dataURL = `${this.serverURL}/groups`;
+        return axios.get(dataURL);
     }
 
-    static getGroup(contact){
+    static getGroup(contact) {
         let groupId = contact.groupId;
-        let dataURL=`${this.serverURL}/groups/${groupId}`
-        return axios.get(dataURL)
+        let dataURL = `${this.serverURL}/groups/${groupId}`;
+        return axios.get(dataURL);
     }
 
-    static getAllContacts(){
+    static getAllContacts() {
         let dataURL = `${this.serverURL}/contacts`;
         return axios.get(dataURL);
     }
-    static getContact(ContactId){
-        let dataURL = `${this.serverURL}/contacts/${ContactId}`
-        return axios.get(dataURL)
 
+    static getContact(ContactId) {
+        let dataURL = `${this.serverURL}/contacts/${ContactId}`;
+        return axios.get(dataURL);
     }
 
-    static createContact(contact){
+    static createContact(contact) {
         let dataURL = `${this.serverURL}/contacts`;
-        return axios.post(dataURL, contact)
+        return axios.post(dataURL, contact);
     }
 
-    static updateContact(contact, contactId){
+    static updateContact(contact, contactId) {
         let dataURL = `${this.serverURL}/contacts/${contactId}`;
         return axios.put(dataURL, contact);
-                     
-    }
-    static deletContact(contactId){
-        let dataURL = `${this.serverURL}/contacts/${contactId}`;
-        return axios.delete(dataURL)
     }
 
+    static deleteContact(contactId) {
+        let dataURL = `${this.serverURL}/contacts/${contactId}`;
+        return axios.delete(dataURL);
+    }
 }
