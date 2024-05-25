@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { ContactService } from "../../../services/Contactservice";
 import Spinner from "../../spinner/spinner";
 
-const ContactList = () => {
-    const [query, setQuery] = useState({ text: "" });
-    const [state, setState] = useState({
+let ContactList = () => {
+    let [query, setQuery] = useState({ text: "" });
+    let [state, setState] = useState({
         loading: false,
         contacts: [],
         filteredContacts: [],
@@ -15,17 +16,14 @@ const ContactList = () => {
         const fetchContacts = async () => {
             setState(prevState => ({ ...prevState, loading: true }));
             try {
-                const response = await fetch('http://localhost:9000/contacts');
-                if (!response.ok) throw new Error(`Error: ${response.status} ${response.statusText}`);
-                const data = await response.json();
+                let response = await ContactService.getAllContacts();
                 setState({
                     loading: false,
-                    contacts: data,
-                    filteredContacts: data,
+                    contacts: response.data,
+                    filteredContacts: response.data,
                     errorMessage: ""
                 });
             } catch (error) {
-                console.error("Fetch contacts failed:", error);
                 setState({
                     loading: false,
                     contacts: [],
@@ -38,23 +36,22 @@ const ContactList = () => {
         fetchContacts();
     }, []);
 
-    const clickDelete = async (contactId) => {
+    let clickDelete = async (contactId, event) => {
+        event.preventDefault(); // Prevent form submission
         try {
-            const response = await fetch(`http://localhost:9000/contacts/${contactId}`, {
-                method: 'DELETE'
-            });
-            if (!response.ok) throw new Error(`Delete failed: ${response.status} ${response.statusText}`);
-            const updatedContactsResponse = await fetch('http://localhost:9000/contacts');
-            if (!updatedContactsResponse.ok) throw new Error(`Error: ${updatedContactsResponse.status} ${updatedContactsResponse.statusText}`);
-            const updatedContacts = await updatedContactsResponse.json();
-            setState({
-                loading: false,
-                contacts: updatedContacts,
-                filteredContacts: updatedContacts,
-                errorMessage: ""
-            });
+            let response = await ContactService.deleteContact(contactId);
+            if (response) {
+                setState(prevState => ({ ...prevState, loading: true }));
+                let response = await ContactService.getAllContacts();
+                setState({
+                    loading: false,
+                    contacts: response.data,
+                    filteredContacts: response.data,
+                    errorMessage: ""
+                });
+            }
+            console.log(contactId)
         } catch (error) {
-            console.error("Delete contact failed:", error);
             setState({
                 loading: false,
                 contacts: [],
@@ -64,10 +61,10 @@ const ContactList = () => {
         }
     };
 
-    const searchContacts = (event) => {
+    let searchContacts = (event) => {
         setQuery({ ...query, text: event.target.value });
-        const theContacts = state.contacts.filter(contact => {
-            return contact.name && contact.name.toLowerCase().includes(event.target.value.toLowerCase());
+        let theContacts = state.contacts.filter(contact => {
+            return contact.name.toLowerCase().includes(event.target.value.toLowerCase());
         });
         setState({
             ...state,
@@ -75,7 +72,7 @@ const ContactList = () => {
         });
     };
 
-    const { loading, filteredContacts, errorMessage } = state;
+    let { loading, filteredContacts } = state;
     return (
         <React.Fragment>
             <section className="contact-search p-3">
@@ -100,14 +97,12 @@ const ContactList = () => {
                                                 name="text"
                                                 value={query.text}
                                                 onChange={searchContacts}
-                                                type="text"
-                                                className="form-control"
-                                                placeholder="Search Names"></input>
+                                                type="text" className="form-control" placeholder="Search names" />
                                         </div>
                                     </div>
                                     <div className="col">
                                         <div className="mb-2">
-                                            <input type="submit" className="btn btn-outline-dark" value="search"></input>
+                                            <input type="submit" className="btn btn-outline-dark" value="Search" />
                                         </div>
                                     </div>
                                 </form>
@@ -116,55 +111,62 @@ const ContactList = () => {
                     </div>
                 </div>
             </section>
-
-            {loading ? <Spinner /> : (
+            {loading ? <Spinner /> :
                 <React.Fragment>
-                    {errorMessage && <p className="text-danger">{errorMessage}</p>}
                     <section className="contact-list">
                         <div className="container">
                             <div className="row">
-                                {filteredContacts && filteredContacts.length > 0 && filteredContacts.map(contact => (
-                                    <div className="col-md-6" key={contact.id}>
-                                        <div className="card my-2">
-                                            <div className="card-body">
-                                                <div className="row align-items-center d-flex justify-content-around">
-                                                    <div className="col-md-4">
-                                                        <img src={contact.imageUrl} className="contact-img" alt="contact" />
-                                                    </div>
-                                                    <div className="col-md-7">
-                                                        <ul className="list-group">
-                                                            <li className="list-group-item list-group-item-action">
-                                                                Name:<span className="fw-bold">{contact.name}</span>
-                                                            </li>
-                                                            <li className="list-group-item list-group-item-action">
-                                                                Mobile:<span className="fw-bold">{contact.mobile}</span>
-                                                            </li>
-                                                            <li className="list-group-item list-group-item-action">
-                                                                Email:<span className="fw-bold">{contact.email}</span>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                    <div className="col-md-1 d-flex flex-column align-items-center">
-                                                        <Link to={`/contacts/view/${contact.id}`} className="btn btn-warning my-1">
-                                                            <i className="fa fa-eye" />
-                                                        </Link>
-                                                        <Link to={`/contacts/edit/${contact.id}`} className="btn btn-primary my-1">
-                                                            <i className="fa fa-pen" />
-                                                        </Link>
-                                                        <button className="btn btn-danger" onClick={() => clickDelete(contact.id)}>
-                                                            <i className="fa fa-trash" />
-                                                        </button>
+                                {filteredContacts.length > 0 &&
+                                    filteredContacts.map(contact => {
+                                        return (
+                                            <div className="col-md-6" key={contact.id}>
+                                                <div className="card my-2">
+                                                    <div className="card-body">
+                                                        <div className="row align-items-center d-flex justify-content-around">
+                                                            <div className="col-md-4">
+                                                                <img src={contact.imageUrl} alt="" className="img-fluid contact-img" />
+                                                            </div>
+                                                            <div className="col-md-7">
+                                                                <ul className="list-group">
+                                                                    <li className="list-group-item list-group-item-action">
+                                                                        Name: <span className="fw-bold">{contact.name}</span>
+                                                                    </li>
+                                                                    <li className="list-group-item list-group-item-action">
+                                                                        Mobile: <span className="fw-bold">{contact.mobile}</span>
+                                                                    </li>
+                                                                    <li className="list-group-item list-group-item-action">
+                                                                        Email: <span className="fw-bold">{contact.email}</span>
+                                                                    </li>
+                                                                    <li className="list-group-item list-group-item-action">
+                                                                        Company: <span className="fw-bold">{contact.company}</span>
+                                                                    </li>
+                                                                    <li className="list-group-item list-group-item-action">
+                                                                        Title: <span className="fw-bold">{contact.title}</span>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                            <div className="col-md-1 d-flex flex-column align-items-center">
+                                                                <Link to={`/contacts/view/${contact.id}`} className="btn btn-warning my-1">
+                                                                    <i className="fa fa-eye" />
+                                                                </Link>
+                                                                <Link to={`/contacts/edit/${contact.id}`} className="btn btn-primary my-1">
+                                                                    <i className="fa fa-pen" />
+                                                                </Link>
+                                                                <button className="btn btn-danger my-1" type="button" onClick={(e) => clickDelete(contact.id, e)}>
+                                                                    <i className="fa fa-trash" />
+                                                                </button>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                ))}
+                                        );
+                                    })}
                             </div>
                         </div>
                     </section>
                 </React.Fragment>
-            )}
+            }
         </React.Fragment>
     );
 };
