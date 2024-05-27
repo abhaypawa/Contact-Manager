@@ -2,6 +2,18 @@
 screenShots
 <img width="934" alt="Screenshot 2024-05-28 040729" src="https://github.com/abhaypawa/Contact-Manager/assets/144175829/9354fe4c-e225-4d44-bc80-032a457fad8f">
 
+<img width="956" alt="image" src="https://github.com/abhaypawa/Contact-Manager/assets/144175829/85ea77e3-db4f-4ac7-9e4d-4cd7fff7d777">
+
+<img width="338" alt="Screenshot 2024-05-28 041507" src="https://github.com/abhaypawa/Contact-Manager/assets/144175829/00d847ba-46b2-40d3-902d-9aaddf647b47">
+
+<img width="915" alt="image" src="https://github.com/abhaypawa/Contact-Manager/assets/144175829/14dee367-760f-4bd7-b646-25e93efa4a45">
+
+<img width="854" alt="image" src="https://github.com/abhaypawa/Contact-Manager/assets/144175829/b74ef635-b043-4925-acb3-4bec21802946">
+
+<img width="445" alt="image" src="https://github.com/abhaypawa/Contact-Manager/assets/144175829/430ce484-6fc0-4467-bfd8-a83fdd38f77c">
+
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
